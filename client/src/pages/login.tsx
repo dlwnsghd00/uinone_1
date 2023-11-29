@@ -22,7 +22,7 @@ const Login = () => {
 
             dispatch("LOGIN", res.data?.user);
 
-            router.push("/")
+            //router.push("/")
         } catch (error: any) {
             console.log(error);
             setErrors(error.response?.data || {})
