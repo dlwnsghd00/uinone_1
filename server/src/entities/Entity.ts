@@ -11,5 +11,9 @@ export default abstract class Entity extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  toJSON() {
+    return instanceToPlain(this);
+  }
+
 
 }
