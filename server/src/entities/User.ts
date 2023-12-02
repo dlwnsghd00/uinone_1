@@ -19,6 +19,7 @@ export class User extends BaseEntity {
     @Column({ unique: true })
     username: string
 
+
     @Column()
     @Length(6, 255, { message: '비밀번호는 6자리 이상이어야 합니다.' })
     password: string;

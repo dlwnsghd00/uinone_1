@@ -11,6 +11,7 @@ const Register = () => {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [collegeName, setCollegeName] = useState("");
     const [errors, setErrors] = useState<any>({});
     const { authenticated } = useAuthState();
 
@@ -59,6 +60,7 @@ const Register = () => {
                             setValue={setPassword}
                             error={errors.password}
                         />
+                        
                         <button className='w-full py-2 mb-1 text-xs font-bold text-white uppercase bg-gray-400 border border-gray-400 rounded'>
                             회원 가입
                         </button>

@@ -6,6 +6,7 @@ import cors from 'cors';
 import * as dotenv from 'dotenv';
 import subRoutes from './routes/subs';
 import cookieParser from "cookie-parser";
+import postRoutes from './routes/posts';
 
 const app = express();
 const origin = "http://localhost:3000";
@@ -22,6 +23,7 @@ dotenv.config();
 app.get("/",(_, res) => res.send("running"));
 app.use("/api/auth", authRoutes)
 app.use("/api/subs", subRoutes)
+app.use("/api/posts", postRoutes)
 app.use(express.static("public"));
 let port = 4000;
 
@@ -32,3 +34,4 @@ app.listen(port,async () => {
         console.log("Database Initialized")
     }).catch(error => console.log(error))
 })
+

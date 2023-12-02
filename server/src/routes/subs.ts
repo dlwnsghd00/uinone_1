@@ -12,15 +12,28 @@ import { makeId } from "../utils/helpers";
 import path from "path";
 import { unlinkSync } from "fs";
 
-const getSub = async (req:Request, res: Response) =>{
+const getSub = async (req: Request, res: Response) => {
     const name = req.params.name;
-    try{
-        const sub = await Sub.findOneByOrFail({name});
-        return res.json(sub);
-    } catch(error){
-        return res.status(404).json({error: "커뮤니티를 찾을 수 없습니다."})
+    try {
+      const sub = await Sub.findOneByOrFail({ name });
+  
+      const posts = await Post.find({
+        where: { subName: sub.name },
+        order: { createdAt: "DESC" },
+        relations: ["comments", "votes"],
+      });
+  
+      sub.posts = posts;
+  
+      if (res.locals.user) {
+        sub.posts.forEach((p) => p.setUserVote(res.locals.user));
+      }
+  
+      return res.json(sub);
+    } catch (error) {
+      return res.status(404).json({ error: "커뮤니티를 찾을 수 없습니다." });
     }
-}
+  };
 
 const createSub = async (req: Request, res: Response, next) => {
     const {name, title, description} = req.body;

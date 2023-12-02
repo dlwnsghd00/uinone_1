@@ -7,6 +7,7 @@ import useSWR from 'swr';
 
 import { useAuthState } from '../../context/auth';
 import { Post } from '../../types';
+import SideBar from '../../components/SideBar';
 
 const SubPage = () => {
     const [ownSub, setOwnSub] = useState(false);
@@ -101,6 +102,11 @@ const SubPage = () => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    {/*포스트와 사이드바*/}
+                    <div className='flex max-w-5xl px-4 pt-4 mx-auto'>
+                        <div className="w-full md:mr-3 md:w-8/12"></div>
+                        <SideBar sub={sub} />
                     </div>
                    
                     
