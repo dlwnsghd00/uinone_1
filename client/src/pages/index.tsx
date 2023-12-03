@@ -8,6 +8,7 @@ import { Post, Sub } from '../types'
 import axios from 'axios'
 import { useAuthState } from '../context/auth'
 import useSWRInfinite from 'swr/infinite';
+import PostCard from '../components/PostCard'
 import { useEffect, useState } from 'react'
 
 const Home: NextPage = () => {
@@ -16,7 +17,7 @@ const Home: NextPage = () => {
   const fetcher = async (url: string) => {
     return await axios.get(url).then(res => res.data)
   }
-  const address = "http://localhost:4000/api/subs/subs/topSubs";
+  const address = `/subs/sub/topSubs`;
 
   const getKey = (pageIndex: number, previousPageData: Post[]) => {
     if (previousPageData && !previousPageData.length) return null;
@@ -30,7 +31,18 @@ const Home: NextPage = () => {
 
   const [observedPost, setObservedPost] = useState("");
 
-  
+  useEffect(() => {
+    // 포스트가 없다면 return 
+    if (!posts || posts.length === 0) return;
+    // posts 배열안에 마지막 post에 id를 가져옵니다.
+    const id = posts[posts.length - 1].identifier;
+    // posts 배열에 post가 추가돼서 마지막 post가 바뀌었다면
+    // 바뀐 post 중 마지막post를 obsevedPost로 
+    if (id !== observedPost) {
+      setObservedPost(id);
+      observeElement(document.getElementById(id));
+    }
+  }, [posts])
 
   const observeElement = (element: HTMLElement | null) => {
     if (!element) return;
@@ -55,13 +67,19 @@ const Home: NextPage = () => {
     <div className='flex max-w-5xl px-4 pt-5 mx-auto'>
       {/* 포스트 리스트 */}
       <div className='w-full md:mr-3 md:w-8/12'>
-      
-      
+        {isInitialLoading && <p className="text-lg text-center">로딩중입니다...</p>}
+        {posts?.map(post => (
+          <PostCard
+            key={post.identifier}
+            post={post}
+            mutate={mutate}
+          />
+        ))}
 
       </div>
 
       {/* 사이드바 */}
-      <div className='flex w-4/12 ml-3 md:block'>
+      <div className='hidden w-4/12 ml-3 md:block'>
         <div className='bg-white border rounded'>
           <div className='p-4 border-b'>
             <p className='text-lg font-semibold text-center'>상위 커뮤니티</p>
@@ -83,10 +101,12 @@ const Home: NextPage = () => {
                       width={24}
                       height={24}
                     />
-                
+                  
                 </Link>
-                <Link href={`/r/${sub.name}`} className='ml-2 font-bold hover:cursor-pointer'>
+                <Link href={`/r/${sub.name}`}className='ml-2 font-bold hover:cursor-pointer'>
+                   
                     /r/{sub.name}
+                  
                 </Link>
                 <p className='ml-auto font-md'>{sub.postCount}</p>
               </div>
@@ -96,8 +116,8 @@ const Home: NextPage = () => {
           </div>
           {authenticated &&
             <div className='w-full py-6 text-center'>
-              <Link href="/subs/create" className='w-full p-2 text-center text-white bg-gray-400 rounded'>
-                
+              <Link href="/subs/create"className='w-full p-2 text-center text-white bg-gray-400 rounded'>
+          
                   커뮤니티 만들기
                 
               </Link>

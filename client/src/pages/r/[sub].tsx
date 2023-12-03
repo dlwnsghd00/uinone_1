@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
-
+import PostCard from '../../components/PostCard';
+import SideBar from '../../components/SideBar';
 import { useAuthState } from '../../context/auth';
 import { Post } from '../../types';
-import SideBar from '../../components/SideBar';
 
 const SubPage = () => {
     const [ownSub, setOwnSub] = useState(false);
@@ -49,7 +49,16 @@ const SubPage = () => {
         }
     }
 
-   
+    let renderPosts;
+    if (!sub) {
+        renderPosts = <p className="text-lg text-center">로딩중...</p>
+    } else if (sub.posts.length === 0) {
+        renderPosts = <p className="text-lg text-center">아직 작성된 포스트가 없습니다.</p>
+    } else {
+        renderPosts = sub.posts.map((post: Post) => (
+            <PostCard key={post.identifier} post={post} subMutate={mutate} />
+        ))
+    }
     console.log('sub.imageUrl', sub?.imageUrl)
     return (
         <>
@@ -103,13 +112,11 @@ const SubPage = () => {
                             </div>
                         </div>
                     </div>
-                    {/*포스트와 사이드바*/}
-                    <div className='flex max-w-5xl px-4 pt-4 mx-auto'>
-                        <div className="w-full md:mr-3 md:w-8/12"></div>
+                    {/* 포스트와 사이드바 */}
+                    <div className='flex max-w-5xl px-4 pt-5 mx-auto'>
+                        <div className="w-full md:mr-3 md:w-8/12">{renderPosts} </div>
                         <SideBar sub={sub} />
                     </div>
-                   
-                    
                 </>
             }
         </>
