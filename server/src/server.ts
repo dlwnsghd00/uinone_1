@@ -10,7 +10,7 @@ import postRoutes from './routes/posts';
 import voteRoutes from './routes/votes';
 import userRoutes from './routes/users';
 const app = express();
-const origin = "http://localhost:3000";
+const origin = process.env.ORIGIN;
 app.use(cors({
     origin,
     credentials: true
@@ -32,7 +32,7 @@ app.use(express.static("public"));
 let port = 4000;
 
 app.listen(port,async () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at ${process.env.APP_URL}`);
     console.log(process.env.origin)
     AppDataSource.initialize().then(async () => {
         console.log("Database Initialized")
